@@ -7,4 +7,4 @@
 - 工作区自身不设置导图同步张数配额，支持任意画布定位和批量编辑。
 - 首页集中展示解决的问题和使用步骤，详细说明移至次级文档。
 
-文件编辑与云端自动提交沿用 1.0.0 的工具。同步核心已通过 11 项真实 Git 仓库检查；Windows 构建和打包后启动检查见 [发布工作流](https://github.com/duohaocui-eng/xmind-ai-workspace/actions/workflows/windows-sync.yml)。未在使用者电脑上完成新的 XMind 客户端兼容性验证。
+文件编辑与云端自动提交沿用 1.0.0 的工具。同步核心已通过 12 项真实 Git 仓库检查（含中文 / 空格文件名）；Windows 构建、打包后界面启动及 Git 访问检查已通过：[成功工作流](https://github.com/duohaocui-eng/xmind-ai-workspace/actions/runs/41186155421)。[下载 v1.1.0](https://github.com/duohaocui-eng/xmind-ai-workspace/releases/tag/v1.1.0)。未在使用者电脑上完成新的 XMind 客户端兼容性验证。
