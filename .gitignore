@@ -4,3 +4,8 @@ __pycache__/
 .DS_Store
 requests/local-demo.json
 *.tmp
+
+build/
+dist/
+*.spec
+XMindSync.exe

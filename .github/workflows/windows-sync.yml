@@ -1,0 +1,63 @@
+name: Build Windows sync app
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sync_app.py'
+      - '.github/workflows/windows-sync.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: windows-sync-release
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Package standalone Windows app
+        shell: pwsh
+        run: |
+          python -m pip install pyinstaller==6.11.1
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name XMindSync sync_app.py
+      - name: Check packaged GUI starts
+        shell: pwsh
+        run: |
+          $report = Join-Path $PWD 'gui-check.json'
+          $p = Start-Process -FilePath '.\dist\XMindSync.exe' -ArgumentList @('--smoke-gui', $report) -Wait -PassThru
+          if ($p.ExitCode -ne 0 -or -not (Test-Path $report)) { throw 'Packaged GUI failed to start' }
+          $result = Get-Content $report -Raw | ConvertFrom-Json
+          if (-not $result.gui_started) { throw 'GUI smoke check failed' }
+          Get-Content $report
+      - name: Check packaged Git access
+        shell: pwsh
+        run: |
+          git checkout -B main refs/remotes/origin/main
+          git branch --set-upstream-to=origin/main main
+          $report = Join-Path $PWD 'git-check.json'
+          $p = Start-Process -FilePath '.\dist\XMindSync.exe' -ArgumentList @('--check-repo', $PWD.Path, '--report', $report) -Wait -PassThru
+          if ($p.ExitCode -ne 0 -or -not (Test-Path $report)) { throw 'Packaged Git check failed' }
+          Get-Content $report
+      - uses: actions/upload-artifact@v4
+        with:
+          name: XMindSync-Windows
+          path: dist/XMindSync.exe
+      - name: Publish download
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          $hash = (Get-FileHash dist/XMindSync.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  XMindSync.exe" | Out-File dist/SHA256SUMS.txt -Encoding ascii
+          gh release view v1.1.0 *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload v1.1.0 dist/XMindSync.exe dist/SHA256SUMS.txt --clobber
+          } else {
+            gh release create v1.1.0 dist/XMindSync.exe dist/SHA256SUMS.txt --target $env:RELEASE_SHA --title 'v1.1.0 · 一键获取与上传' --notes '下载 XMindSync.exe，选择已有本地工作区。获取云端更新、上传本地修改各点一次；复用现有 Git 认证，无需安装 Python。上传前保存导图，获取前保存并关闭相关文档。'
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Release publishing failed' }
