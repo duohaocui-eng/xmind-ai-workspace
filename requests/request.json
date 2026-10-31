@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "request_id": "welcome-cloud-001",
+  "file": "00_临时/入门示例-修改后.xmind",
+  "expect_sha256": "7466f5603cd944e7cdf85679af5d673acf92b06e2cb129968fede7d5f22fb814",
+  "operations": [
+    {
+      "op": "rename",
+      "target": {
+        "id": "welcome-root"
+      },
+      "title": "云端演示：已完成请求修改"
+    }
+  ]
+}
