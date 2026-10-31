@@ -1,0 +1,14 @@
+{
+  "request_id": "welcome-cloud-001",
+  "request_sha256": "c739f15c0935eaa1baf5f1424c064f9797926724e133814b79efd2bd965ebe7c",
+  "file": "00_临时/入门示例-修改后.xmind",
+  "before_sha256": "7466f5603cd944e7cdf85679af5d673acf92b06e2cb129968fede7d5f22fb814",
+  "after_sha256": "19eeb90c39331f12093cc50dcfb356ca1a20797637b9a26b4a668800d87da456",
+  "operation_count": 1,
+  "status": "completed",
+  "validation": {
+    "sheet_count": 1,
+    "topic_count": 4,
+    "detached_count": 0
+  }
+}
